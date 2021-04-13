@@ -1,0 +1,33 @@
+# vim:set ft=dockerfile:
+FROM debian:buster-slim
+ENV LANG C.UTF8
+
+# sane 
+RUN set -eux; \
+    apt update; \
+	apt upgrade -y 
+
+# clean 
+RUN set -eux; \
+    apt autoremove -y ; \
+    apt clean -y ; \
+    rm -rf /var/lib/apt/lists/*
+
+# defaults
+
+WORKDIR /
+
+RUN mkdir -p /docker-entrypoint.d
+
+COPY docker-entrypoint.sh /
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# specific
+
+VOLUME /www
+
+COPY ./usr /
+
+CMD ["/usr/local/bin/www.sh"]
+
